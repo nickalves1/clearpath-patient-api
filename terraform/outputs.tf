@@ -13,3 +13,7 @@ output "release_requests_queue_url" {
 output "release_requests_dlq_url" {
   value = aws_sqs_queue.release_requests_dlq.url
 }
+
+output "release_delivered_topic_arn" {
+  value = aws_sns_topic.release_delivered.arn
+}
