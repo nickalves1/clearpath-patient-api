@@ -25,3 +25,7 @@ output "release_packages_bucket_name" {
 output "patient_api_log_group_name" {
   value = aws_cloudwatch_log_group.patient_api.name
 }
+
+output "patient_api_runtime_role_arn" {
+  value = aws_iam_role.patient_api_runtime.arn
+}
