@@ -17,3 +17,7 @@ output "release_requests_dlq_url" {
 output "release_delivered_topic_arn" {
   value = aws_sns_topic.release_delivered.arn
 }
+
+output "release_packages_bucket_name" {
+  value = aws_s3_bucket.release_packages.id
+}
