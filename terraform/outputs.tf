@@ -21,3 +21,7 @@ output "release_delivered_topic_arn" {
 output "release_packages_bucket_name" {
   value = aws_s3_bucket.release_packages.id
 }
+
+output "patient_api_log_group_name" {
+  value = aws_cloudwatch_log_group.patient_api.name
+}
