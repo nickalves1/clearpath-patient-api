@@ -15,13 +15,14 @@ export class DynamoDbIdempotencyStore extends IdempotencyStore {
   constructor() {
     super();
 
+    const localEndpoint = process.env.DYNAMODB_ENDPOINT;
+
     const client = new DynamoDBClient({
-      endpoint: 'http://localhost:8000',
-      region: 'local',
-      credentials: {
-        accessKeyId: 'local',
-        secretAccessKey: 'local',
-      },
+      region: process.env.AWS_REGION ?? 'us-east-1',
+      ...(localEndpoint && {
+        endpoint: localEndpoint,
+        credentials: { accessKeyId: 'local', secretAccessKey: 'local' },
+      }),
     });
 
     this.documentClient = DynamoDBDocumentClient.from(client);
