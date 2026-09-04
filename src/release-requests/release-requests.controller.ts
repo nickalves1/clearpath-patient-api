@@ -11,41 +11,46 @@ import {
 } from '@nestjs/common';
 import { IdempotencyStore } from '../idempotency/idempotency-store.js';
 import { CreateReleaseRequestDto } from './dto/create-release-request.dto.js';
+import { ReleaseRequestsQueue } from './queue/release-requests-queue.js';
 import { ReleaseRequestsService } from './release-requests.service.js';
 
 @Controller('release-requests')
 export class ReleaseRequestsController {
-    constructor(
-        private readonly service: ReleaseRequestsService,
-        private readonly idempotencyStore: IdempotencyStore,
-    ) {}
+  constructor(
+    private readonly service: ReleaseRequestsService,
+    private readonly idempotencyStore: IdempotencyStore,
+    private readonly queue: ReleaseRequestsQueue,
+  ) {}
 
-    @Post()
-    async create(
-        @Body() dto: CreateReleaseRequestDto,
-        @Headers('idempotency-key') idempotencyKey: string,
-    ) {
-        if (!idempotencyKey) {
-            throw new BadRequestException('The Idempotency-Key header is required');
-        }
-
-        const claimed = await this.idempotencyStore.claim(idempotencyKey);
-
-        if (!claimed) {
-            throw new ConflictException('This request was already processed');
-        }
-
-        return this.service.requestRelease(dto);
+  @Post()
+  async create(
+    @Body() dto: CreateReleaseRequestDto,
+    @Headers('idempotency-key') idempotencyKey: string,
+  ) {
+    if (!idempotencyKey) {
+      throw new BadRequestException('The Idempotency-Key header is required');
     }
 
-    @Get(':id')
-    async findOne(@Param('id') id: string) {
-        const request = await this.service.findById(id);
+    const claimed = await this.idempotencyStore.claim(idempotencyKey);
 
-        if (!request) {
-            throw new NotFoundException(`Release request ${id} not found`);
-        }
-
-        return request;
+    if (!claimed) {
+      throw new ConflictException('This request was already processed');
     }
+
+    const request = await this.service.requestRelease(dto);
+    await this.queue.enqueue(request.id);
+
+    return request;
+  }
+
+  @Get(':id')
+  async findOne(@Param('id') id: string) {
+    const request = await this.service.findById(id);
+
+    if (!request) {
+      throw new NotFoundException(`Release request ${id} not found`);
+    }
+
+    return request;
+  }
 }

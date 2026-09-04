@@ -5,57 +5,59 @@ import { ReleaseRequestsRepository } from './repositories/release-requests.repos
 import { ReleaseRequestsService } from './release-requests.service.js';
 
 class FakeReleaseRequestsRepository extends ReleaseRequestsRepository {
-    public savedRequests: ReleaseRequest[] = [];
+  public savedRequests: ReleaseRequest[] = [];
 
-    async save(request: ReleaseRequest): Promise<void> {
-        this.savedRequests.push(request);
-    }
+  async save(request: ReleaseRequest): Promise<void> {
+    this.savedRequests.push(request);
+  }
 
-    async findById(id: string): Promise<ReleaseRequest | null> {
-        return this.savedRequests.find((request) => request.id === id) ?? null;
-    }
+  async findById(id: string): Promise<ReleaseRequest | null> {
+    return this.savedRequests.find((request) => request.id === id) ?? null;
+  }
 }
 
 describe('ReleaseRequestsService', () => {
-    let service: ReleaseRequestsService;
-    let repository: FakeReleaseRequestsRepository;
+  let service: ReleaseRequestsService;
+  let repository: FakeReleaseRequestsRepository;
 
-    beforeEach(async () => {
-        const moduleRef = await Test.createTestingModule({
-            providers: [
-                ReleaseRequestsService,
-                {
-                    provide: ReleaseRequestsRepository,
-                    useClass: FakeReleaseRequestsRepository,
-                },
-            ],
-        }).compile();
+  beforeEach(async () => {
+    const moduleRef = await Test.createTestingModule({
+      providers: [
+        ReleaseRequestsService,
+        {
+          provide: ReleaseRequestsRepository,
+          useClass: FakeReleaseRequestsRepository,
+        },
+      ],
+    }).compile();
 
-        service = moduleRef.get(ReleaseRequestsService);
-        repository = moduleRef.get(ReleaseRequestsRepository) as FakeReleaseRequestsRepository;
+    service = moduleRef.get(ReleaseRequestsService);
+    repository = moduleRef.get(
+      ReleaseRequestsRepository,
+    ) as FakeReleaseRequestsRepository;
+  });
+
+  it('saves the release request through whichever repository is bound', async () => {
+    const request = await service.requestRelease({
+      patientId: 'patient-123',
+      hospitalIds: ['hospital-1'],
+      dateRangeFrom: '2026-01-01',
+      dateRangeTo: '2026-09-01',
     });
 
-    it('saves the release request through whichever repository is bound', async () => {
-        const request = await service.requestRelease({
-            patientId: 'patient-123',
-            hospitalIds: ['hospital-1'],
-            dateRangeFrom: '2026-01-01',
-            dateRangeTo: '2026-09-01',
-        });
+    expect(repository.savedRequests).toContainEqual(request);
+  });
 
-        expect(repository.savedRequests).toContainEqual(request);
+  it('finds a previously saved request by id', async () => {
+    const created = await service.requestRelease({
+      patientId: 'patient-456',
+      hospitalIds: ['hospital-2'],
+      dateRangeFrom: '2026-02-01',
+      dateRangeTo: '2026-03-01',
     });
 
-    it('finds a previously saved request by id', async () => {
-        const created = await service.requestRelease({
-            patientId: 'patient-456',
-            hospitalIds: ['hospital-2'],
-            dateRangeFrom: '2026-02-01',
-            dateRangeTo: '2026-03-01',
-        });
+    const found = await service.findById(created.id);
 
-        const found = await service.findById(created.id);
-
-        expect(found).toEqual(created);
-    });
+    expect(found).toEqual(created);
+  });
 });
