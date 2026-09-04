@@ -1,11 +1,17 @@
 import { Test } from '@nestjs/testing';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { ReleaseRequest } from '../domain/release-request.js';
-import { ReleaseNotifier, ReleaseRequestNotification } from '../notifications/release-notifier.js';
+import {
+  ReleaseNotifier,
+  ReleaseRequestNotification,
+} from '../notifications/release-notifier.js';
 import { ReleasePackageStore } from '../packaging/release-package-store.js';
 import { StudyPackager } from '../packaging/study-packager.js';
 import { ReleaseRequestsRepository } from '../repositories/release-requests.repository.js';
-import { QueueMessage, ReleaseRequestsQueue } from './release-requests-queue.js';
+import {
+  QueueMessage,
+  ReleaseRequestsQueue,
+} from './release-requests-queue.js';
 import { ReleaseWorkerService } from './release-worker.service.js';
 
 const EXISTING_REQUEST: ReleaseRequest = {
@@ -20,11 +26,17 @@ const EXISTING_REQUEST: ReleaseRequest = {
 
 class FakeQueue extends ReleaseRequestsQueue {
   deleted: string[] = [];
-  messages: QueueMessage[] = [{ releaseRequestId: EXISTING_REQUEST.id, receiptHandle: 'receipt-1' }];
+  messages: QueueMessage[] = [
+    { releaseRequestId: EXISTING_REQUEST.id, receiptHandle: 'receipt-1' },
+  ];
 
   async enqueue(): Promise<void> {}
-  async receiveMessages() { return this.messages; }
-  async deleteMessage(receiptHandle: string) { this.deleted.push(receiptHandle); }
+  async receiveMessages() {
+    return this.messages;
+  }
+  async deleteMessage(receiptHandle: string) {
+    this.deleted.push(receiptHandle);
+  }
 }
 
 class FakeRepository extends ReleaseRequestsRepository {
@@ -40,17 +52,23 @@ class FakeRepository extends ReleaseRequestsRepository {
 }
 
 class FakePackager extends StudyPackager {
-  async package() { return Buffer.from('fake-package'); }
+  async package() {
+    return Buffer.from('fake-package');
+  }
 }
 
 class FakePackageStore extends ReleasePackageStore {
   async upload(): Promise<void> {}
-  async getSignedDownloadUrl() { return 'https://example.com/signed-url'; }
+  async getSignedDownloadUrl() {
+    return 'https://example.com/signed-url';
+  }
 }
 
 class FakeNotifier extends ReleaseNotifier {
   notified: ReleaseRequestNotification[] = [];
-  async notifyDelivered(notification: ReleaseRequestNotification) { this.notified.push(notification); }
+  async notifyDelivered(notification: ReleaseRequestNotification) {
+    this.notified.push(notification);
+  }
 }
 
 describe('ReleaseWorkerService', () => {
