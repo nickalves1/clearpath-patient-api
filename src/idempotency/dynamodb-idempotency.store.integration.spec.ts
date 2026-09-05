@@ -1,12 +1,19 @@
 import { randomUUID } from 'node:crypto';
 import { beforeEach, describe, expect, it } from 'vitest';
+import { AppConfigService } from '../config/app-config.service.js';
 import { DynamoDbIdempotencyStore } from './dynamodb-idempotency.store.js';
+
+class FakeAppConfigService extends AppConfigService {
+  override get idempotencyKeysTableName(): string {
+    return 'clearpath-idempotency-keys';
+  }
+}
 
 describe('DynamoDbIdempotencyStore', () => {
   let store: DynamoDbIdempotencyStore;
 
   beforeEach(() => {
-    store = new DynamoDbIdempotencyStore();
+    store = new DynamoDbIdempotencyStore(new FakeAppConfigService());
   });
 
   it('claims a key that has never been used', async () => {

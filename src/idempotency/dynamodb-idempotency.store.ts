@@ -5,14 +5,13 @@ import {
 } from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocumentClient, PutCommand } from '@aws-sdk/lib-dynamodb';
 import { IdempotencyStore } from './idempotency-store.js';
-
-const TABLE_NAME = 'clearpath-idempotency-keys';
+import { AppConfigService } from '../config/app-config.service.js';
 
 @Injectable()
 export class DynamoDbIdempotencyStore extends IdempotencyStore {
   private readonly documentClient: DynamoDBDocumentClient;
 
-  constructor() {
+  constructor(private readonly appConfig: AppConfigService) {
     super();
 
     const localEndpoint = process.env.DYNAMODB_ENDPOINT;
@@ -32,7 +31,7 @@ export class DynamoDbIdempotencyStore extends IdempotencyStore {
     try {
       await this.documentClient.send(
         new PutCommand({
-          TableName: TABLE_NAME,
+          TableName: this.appConfig.idempotencyKeysTableName,
           Item: { idempotencyKey: key },
           ConditionExpression: 'attribute_not_exists(idempotencyKey)',
         }),

@@ -11,4 +11,5 @@ export type ReleaseRequest = {
   createdAt: Date;
   downloadUrl?: string;
   deliveredAt?: Date;
+  notifiedAt?: Date;
 };

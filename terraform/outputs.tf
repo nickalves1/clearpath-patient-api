@@ -29,3 +29,7 @@ output "patient_api_log_group_name" {
 output "patient_api_runtime_role_arn" {
   value = aws_iam_role.patient_api_runtime.arn
 }
+
+output "patient_api_url" {
+  value = aws_apigatewayv2_stage.default.invoke_url
+}

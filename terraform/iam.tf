@@ -8,6 +8,16 @@ data "aws_iam_policy_document" "patient_api_trust" {
       identifiers = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"]
     }
   }
+
+  statement {
+    effect  = "Allow"
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["lambda.amazonaws.com"]
+    }
+  }
 }
 
 resource "aws_iam_role" "patient_api_runtime" {
@@ -27,9 +37,14 @@ data "aws_iam_policy_document" "patient_api_permissions" {
   }
 
   statement {
-    sid       = "SendToReleaseQueue"
-    effect    = "Allow"
-    actions   = ["sqs:SendMessage"]
+    sid    = "ConsumeReleaseQueue"
+    effect = "Allow"
+    actions = [
+      "sqs:SendMessage",
+      "sqs:ReceiveMessage",
+      "sqs:DeleteMessage",
+      "sqs:GetQueueAttributes",
+    ]
     resources = [aws_sqs_queue.release_requests.arn]
   }
 
@@ -51,7 +66,28 @@ data "aws_iam_policy_document" "patient_api_permissions" {
     sid       = "ReadAppConfig"
     effect    = "Allow"
     actions   = ["ssm:GetParameter", "ssm:GetParametersByPath"]
-    resources = ["arn:aws:ssm:${var.region}:${data.aws_caller_identity.current.account_id}:parameter/clearpath/patient-api/*"]
+    resources = ["arn:aws:ssm:${var.region}:${data.aws_caller_identity.current.account_id}:parameter/clearpath/patient-api*"]
+  }
+
+  statement {
+    sid    = "LambdaLogging"
+    effect = "Allow"
+    actions = [
+      "logs:CreateLogStream",
+      "logs:PutLogEvents",
+    ]
+    resources = [
+      "${aws_cloudwatch_log_group.intake_lambda.arn}:*",
+      "${aws_cloudwatch_log_group.worker_lambda.arn}:*",
+      "${aws_cloudwatch_log_group.authorizer_lambda.arn}:*",
+    ]
+  }
+
+  statement {
+    sid       = "DecryptSsmSecrets"
+    effect    = "Allow"
+    actions   = ["kms:Decrypt"]
+    resources = [data.aws_kms_alias.ssm.target_key_arn]
   }
 }
 
