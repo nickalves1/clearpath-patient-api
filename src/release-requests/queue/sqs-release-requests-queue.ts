@@ -5,22 +5,24 @@ import {
   SendMessageCommand,
   SQSClient,
 } from '@aws-sdk/client-sqs';
+import { AppConfigService } from '../../config/app-config.service.js';
 import {
   QueueMessage,
   ReleaseRequestsQueue,
 } from './release-requests-queue.js';
 
-const QUEUE_URL =
-  'https://sqs.us-east-1.amazonaws.com/882034443824/clearpath-release-requests-queue';
-
 @Injectable()
 export class SqsReleaseRequestsQueue extends ReleaseRequestsQueue {
   private readonly client = new SQSClient({ region: 'us-east-1' });
 
+  constructor(private readonly appConfig: AppConfigService) {
+    super();
+  }
+
   async enqueue(releaseRequestId: string): Promise<void> {
     await this.client.send(
       new SendMessageCommand({
-        QueueUrl: QUEUE_URL,
+        QueueUrl: this.appConfig.releaseRequestsQueueUrl,
         MessageBody: JSON.stringify({ releaseRequestId }),
       }),
     );
@@ -29,7 +31,7 @@ export class SqsReleaseRequestsQueue extends ReleaseRequestsQueue {
   async receiveMessages(): Promise<QueueMessage[]> {
     const response = await this.client.send(
       new ReceiveMessageCommand({
-        QueueUrl: QUEUE_URL,
+        QueueUrl: this.appConfig.releaseRequestsQueueUrl,
         MaxNumberOfMessages: 10,
         WaitTimeSeconds: 5,
       }),
@@ -48,7 +50,7 @@ export class SqsReleaseRequestsQueue extends ReleaseRequestsQueue {
   async deleteMessage(receiptHandle: string): Promise<void> {
     await this.client.send(
       new DeleteMessageCommand({
-        QueueUrl: QUEUE_URL,
+        QueueUrl: this.appConfig.releaseRequestsQueueUrl,
         ReceiptHandle: receiptHandle,
       }),
     );

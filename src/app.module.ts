@@ -3,10 +3,11 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
 import { ReleaseRequestsModule } from './release-requests/release-requests.module.js';
+import { ReleaseWorkerScheduler } from './release-requests/queue/release-worker.scheduler.js';
 
 @Module({
   imports: [ScheduleModule.forRoot(), ReleaseRequestsModule],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, ReleaseWorkerScheduler],
 })
 export class AppModule {}
