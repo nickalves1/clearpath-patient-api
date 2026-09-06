@@ -30,7 +30,7 @@ jobs:
       - name: install node
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24
       - name: auth AWS by OIDC
         uses: aws-actions/configure-aws-credentials@v4
         with:

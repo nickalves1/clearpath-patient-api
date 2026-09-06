@@ -20,6 +20,10 @@ jobs:
     steps:
       - name: get repo code
         uses: actions/checkout@v4
+      - name: install node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
       - name: get terraform
         uses: hashicorp/setup-terraform@v3
         with: 
