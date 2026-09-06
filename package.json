@@ -21,7 +21,7 @@
     "test:debug": "vitest --inspect-brk --no-file-parallelism",
     "test:e2e": "vitest run --config ./vitest.config.e2e.ts",
     "test:integration": "vitest run --config ./vitest.config.integration.ts",
-    "build:lambda": "npm run build && esbuild dist/lambda.js dist/worker-lambda.js dist/authorizer.js --bundle --platform=node --target=node20 --format=cjs --outdir=dist-lambda --external:@nestjs/microservices --external:@nestjs/microservices/* --external:@nestjs/websockets/*"
+    "build:lambda": "npm run build && esbuild dist/lambda.js dist/worker-lambda.js dist/authorizer.js --bundle --platform=node --target=node22 --format=cjs --outdir=dist-lambda --external:@nestjs/microservices --external:@nestjs/microservices/* --external:@nestjs/websockets/*"
   },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.1125.0",
