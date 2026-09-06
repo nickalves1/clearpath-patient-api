@@ -17,6 +17,8 @@ permissions:
 jobs:
   terraform:
     runs-on: ubuntu-latest
+    env:
+      TF_VAR_aws_profile: ""
     steps:
       - name: get repo code
         uses: actions/checkout@v4
