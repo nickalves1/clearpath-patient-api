@@ -20,14 +20,6 @@ jobs:
     steps:
       - name: get repo code
         uses: actions/checkout@v4
-      - name: TEMP debug oidc token claims
-        run: |
-          TOKEN=$(curl -sS -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
-            "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=sts.amazonaws.com" | node -e "process.stdout.write(JSON.parse(require('fs').readFileSync(0,'utf8')).value)")
-          node -e "
-            const claims = JSON.parse(Buffer.from(process.argv[1].split('.')[1], 'base64url').toString('utf8'));
-            console.log(JSON.stringify({ aud: claims.aud, sub: claims.sub, iss: claims.iss, repository: claims.repository, event_name: claims.event_name }, null, 2));
-          " "$TOKEN"
       - name: get terraform
         uses: hashicorp/setup-terraform@v3
         with: 

@@ -27,7 +27,7 @@ data "aws_iam_policy_document" "github_actions_trust" {
     condition {
       test     = "StringLike"
       variable = "token.actions.githubusercontent.com:sub"
-      values   = ["repo:nickalves1/clearpath-patient-api:*"]
+      values   = ["repo:nickalves1@*/clearpath-patient-api@*:*"]
     }
   }
 }
