@@ -1,0 +1,44 @@
+name: Terraform CI/CD
+
+on:
+  pull_request:
+    paths:
+      - 'terraform/**'
+  push:
+    branches:
+      - master
+    paths:
+      - 'terraform/**'
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    steps:
+      - name: get repo code
+        uses: actions/checkout@v4
+      - name: get terraform
+        uses: hashicorp/setup-terraform@v3
+        with: 
+          terraform_version: 1.16.0
+      - name: auth AWS by OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::882034443824:role/clearpath-patient-api-github-actions
+          aws-region: us-east-1
+      - name: install node and build lambda
+        run: npm ci && npm run build:lambda
+      - name: init terraform
+        run: terraform init
+        working-directory: terraform
+      - name: plan terraform
+        run: terraform plan
+        working-directory: terraform
+        if: github.event_name == 'pull_request'
+      - name: apply terraform
+        run: terraform apply -auto-approve
+        working-directory: terraform
+        if: github.event_name == 'push'

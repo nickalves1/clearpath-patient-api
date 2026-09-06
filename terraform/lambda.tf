@@ -74,7 +74,7 @@ resource "aws_lambda_function" "intake" {
   function_name    = "clearpath-patient-api-intake"
   role             = aws_iam_role.patient_api_runtime.arn
   handler          = "lambda.handler"
-  runtime          = "nodejs20.x"
+  runtime          = "nodejs22.x"
   s3_bucket        = aws_s3_bucket.lambda_deployments.id
   s3_key           = aws_s3_object.intake_lambda_package.key
   source_code_hash = data.archive_file.intake_lambda.output_base64sha256
@@ -88,7 +88,7 @@ resource "aws_lambda_function" "worker" {
   function_name    = "clearpath-patient-api-worker"
   role             = aws_iam_role.patient_api_runtime.arn
   handler          = "worker-lambda.handler"
-  runtime          = "nodejs20.x"
+  runtime          = "nodejs22.x"
   s3_bucket        = aws_s3_bucket.lambda_deployments.id
   s3_key           = aws_s3_object.worker_lambda_package.key
   source_code_hash = data.archive_file.worker_lambda.output_base64sha256
@@ -102,7 +102,7 @@ resource "aws_lambda_function" "authorizer" {
   function_name    = "clearpath-patient-api-authorizer"
   role             = aws_iam_role.patient_api_runtime.arn
   handler          = "authorizer.handler"
-  runtime          = "nodejs20.x"
+  runtime          = "nodejs22.x"
   s3_bucket        = aws_s3_bucket.lambda_deployments.id
   s3_key           = aws_s3_object.authorizer_lambda_package.key
   source_code_hash = data.archive_file.authorizer_lambda.output_base64sha256

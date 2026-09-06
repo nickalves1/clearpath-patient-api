@@ -1,0 +1,61 @@
+name: Teste CI
+
+on:
+  pull_request:
+    paths:
+      - 'src/**'
+      - 'test/**'
+  push:
+    branches:
+      - master
+    paths:
+      - 'src/**'
+      - 'test/**'
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  testeCI:
+    runs-on: ubuntu-latest
+    services:
+      dynamodb:
+        image: amazon/dynamodb-local:latest
+        ports:
+          - 8000:8000
+    steps:
+      - name: get repo code
+        uses: actions/checkout@v4
+      - name: install node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: auth AWS by OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::882034443824:role/clearpath-patient-api-github-actions
+          aws-region: us-east-1
+      - name: run CI
+        run: npm ci
+      - name: create local dynamodb tables
+        run: |
+          aws dynamodb create-table \
+            --table-name clearpath-release-requests \
+            --attribute-definitions AttributeName=id,AttributeType=S \
+            --key-schema AttributeName=id,KeyType=HASH \
+            --billing-mode PAY_PER_REQUEST \
+            --endpoint-url http://localhost:8000
+
+          aws dynamodb create-table \
+            --table-name clearpath-idempotency-keys \
+            --attribute-definitions AttributeName=idempotencyKey,AttributeType=S \
+            --key-schema AttributeName=idempotencyKey,KeyType=HASH \
+            --billing-mode PAY_PER_REQUEST \
+            --endpoint-url http://localhost:8000
+      - name: run unit tests
+        run: npm run test
+      - name: run integration tests
+        run: npm run test:integration
+        env:
+          DYNAMODB_ENDPOINT: http://localhost:8000
