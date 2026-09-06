@@ -39,6 +39,10 @@ jobs:
       - name: run CI
         run: npm ci
       - name: create local dynamodb tables
+        env:
+          AWS_ACCESS_KEY_ID: local
+          AWS_SECRET_ACCESS_KEY: local
+          AWS_SESSION_TOKEN: ""
         run: |
           aws dynamodb create-table \
             --table-name clearpath-release-requests \
