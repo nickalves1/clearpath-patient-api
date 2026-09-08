@@ -105,7 +105,7 @@ data "aws_ami" "amazon_linux" {
 
 resource "aws_key_pair" "identity_ec2" {
   key_name   = "clearpath-identity-ec2"
-  public_key = file("~/.ssh/id_ed25519.pub")
+  public_key = file("${path.module}/identity-ec2.pub")
 }
 
 resource "aws_eip" "identity_ec2" {
