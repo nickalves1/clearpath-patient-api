@@ -3,14 +3,6 @@ resource "aws_security_group" "identity_ec2" {
   description = "Security group for the EC2 running Ory Kratos/Hydra and Laravel"
 
   ingress {
-    description = "SSH from my own IP only"
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["177.206.23.217/32"]
-  }
-
-  ingress {
     description = "HTTP (public - needed for Kratos/Hydra/Laravel and Lets Encrypt)"
     from_port   = 80
     to_port     = 80
