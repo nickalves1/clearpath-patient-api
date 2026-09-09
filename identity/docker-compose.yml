@@ -19,7 +19,7 @@ services:
       - "4434:4434"
     volumes:
       - ./kratos:/etc/config/kratos
-    command: serve -c /etc/config/kratos/kratos.yml --dev
+    command: serve -c /etc/config/kratos/kratos.yml
     restart: unless-stopped
 
   hydra-migrate:
@@ -41,5 +41,5 @@ services:
       - "4445:4445"
     volumes:
       - ./hydra:/etc/config/hydra
-    command: serve -c /etc/config/hydra/hydra.yml all --dev
+    command: serve -c /etc/config/hydra/hydra.yml all
     restart: unless-stopped

@@ -2,11 +2,11 @@ version: v1.1.0
 
 serve:
   public:
-    base_url: http://34.226.186.255:4433/
+    base_url: https://kratos.clearpath.fitleads.com.br/
     cors:
       enabled: true
   admin:
-    base_url: http://34.226.186.255:4434/
+    base_url: http://127.0.0.1:4434/
 
 selfservice:
   default_browser_return_url: http://localhost:3000/
