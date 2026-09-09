@@ -6,6 +6,7 @@ on:
       - master
     paths:
       - 'identity/**'
+  workflow_dispatch: {}
 
 permissions:
   id-token: write
