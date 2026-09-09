@@ -1,0 +1,45 @@
+services:
+  kratos-migrate:
+    image: oryd/kratos:v26.2.0
+    environment:
+      - DSN=postgres://clearpath_admin:${RDS_PASSWORD}@clearpath-identity-db.cqzm2i4c6tdt.us-east-1.rds.amazonaws.com:5432/kratos?sslmode=require
+    volumes:
+      - ./kratos:/etc/config/kratos
+    command: migrate sql -e --yes
+
+  kratos:
+    image: oryd/kratos:v26.2.0
+    depends_on:
+      kratos-migrate:
+        condition: service_completed_successfully
+    environment:
+      - DSN=postgres://clearpath_admin:${RDS_PASSWORD}@clearpath-identity-db.cqzm2i4c6tdt.us-east-1.rds.amazonaws.com:5432/kratos?sslmode=require
+    ports:
+      - "4433:4433"
+      - "4434:4434"
+    volumes:
+      - ./kratos:/etc/config/kratos
+    command: serve -c /etc/config/kratos/kratos.yml --dev
+    restart: unless-stopped
+
+  hydra-migrate:
+    image: oryd/hydra:v26.2.0
+    environment:
+      - DSN=postgres://clearpath_admin:${RDS_PASSWORD}@clearpath-identity-db.cqzm2i4c6tdt.us-east-1.rds.amazonaws.com:5432/hydra?sslmode=require
+    command: migrate sql -e --yes
+
+  hydra:
+    image: oryd/hydra:v26.2.0
+    depends_on:
+      hydra-migrate:
+        condition: service_completed_successfully
+    environment:
+      - DSN=postgres://clearpath_admin:${RDS_PASSWORD}@clearpath-identity-db.cqzm2i4c6tdt.us-east-1.rds.amazonaws.com:5432/hydra?sslmode=require
+      - SECRETS_SYSTEM=${HYDRA_SECRET}
+    ports:
+      - "4444:4444"
+      - "4445:4445"
+    volumes:
+      - ./hydra:/etc/config/hydra
+    command: serve -c /etc/config/hydra/hydra.yml all --dev
+    restart: unless-stopped

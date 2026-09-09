@@ -1,0 +1,12 @@
+urls:
+  self:
+    issuer: http://34.226.186.255:4444/
+  login: http://localhost:3000/login
+  consent: http://localhost:3000/consent
+
+serve:
+  cookies:
+    same_site_mode: Lax
+
+log:
+  level: debug
