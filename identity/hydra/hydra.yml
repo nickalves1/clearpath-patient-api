@@ -1,6 +1,6 @@
 urls:
   self:
-    issuer: http://34.226.186.255:4444/
+    issuer: https://hydra.clearpath.fitleads.com.br/
   login: http://localhost:3000/login
   consent: http://localhost:3000/consent
 
