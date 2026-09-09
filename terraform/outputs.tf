@@ -33,3 +33,16 @@ output "patient_api_runtime_role_arn" {
 output "patient_api_url" {
   value = aws_apigatewayv2_stage.default.invoke_url
 }
+
+output "identity_zone_name_servers" {
+  description = "Add these 4 as NS records for clearpath.fitleads.com.br in GoDaddy's DNS management to delegate the subdomain"
+  value       = aws_route53_zone.clearpath.name_servers
+}
+
+output "identity_kratos_hostname" {
+  value = aws_route53_record.kratos.name
+}
+
+output "identity_hydra_hostname" {
+  value = aws_route53_record.hydra.name
+}
