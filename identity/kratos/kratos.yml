@@ -5,6 +5,16 @@ serve:
     base_url: https://kratos.clearpath.fitleads.com.br/
     cors:
       enabled: true
+      allowed_origins:
+        - http://localhost:3000
+      allowed_methods:
+        - GET
+        - POST
+      allowed_headers:
+        - Content-Type
+        - Cookie
+      exposed_headers:
+        - Set-Cookie
   admin:
     base_url: http://127.0.0.1:4434/
 
