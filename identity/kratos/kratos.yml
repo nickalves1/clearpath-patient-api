@@ -1,12 +1,15 @@
 version: v1.1.0
 
+cookies:
+  domain: clearpath.fitleads.com.br
+ 
 serve:
   public:
     base_url: https://kratos.clearpath.fitleads.com.br/
     cors:
       enabled: true
       allowed_origins:
-        - http://localhost:3000
+        - http://dev.clearpath.fitleads.com.br:3000
       allowed_methods:
         - GET
         - POST
@@ -19,9 +22,9 @@ serve:
     base_url: http://127.0.0.1:4434/
 
 selfservice:
-  default_browser_return_url: http://localhost:3000/
+  default_browser_return_url: http://dev.clearpath.fitleads.com.br:3000/
   allowed_return_urls:
-    - http://localhost:3000
+    - http://dev.clearpath.fitleads.com.br:3000
 
   methods:
     password:
@@ -32,7 +35,7 @@ selfservice:
       enabled: true
     logout:
       after:
-        default_browser_return_url: http://localhost:3000/
+        default_browser_return_url: http://dev.clearpath.fitleads.com.br:3000/
 
 identity:
   default_schema_id: default
