@@ -10,6 +10,8 @@ serve:
       enabled: true
       allowed_origins:
         - http://localhost:3000
+        - https://main.d2r5xsvtj5bdkw.amplifyapp.com
+        - https://app.clearpath.fitleads.com.br
       allowed_methods:
         - GET
         - POST
