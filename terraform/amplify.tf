@@ -18,6 +18,11 @@ data "aws_ssm_parameter" "auth_secret" {
   with_decryption = true
 }
 
+data "aws_ssm_parameter" "hydra_admin_secret" {
+  name            = "/clearpath/identity/hydra-admin-secret"
+  with_decryption = true
+}
+
 data "aws_iam_policy_document" "amplify_service_trust" {
   statement {
     effect  = "Allow"
@@ -49,7 +54,7 @@ resource "aws_amplify_app" "patient_app" {
         preBuild:
           commands:
             - npm ci
-            - env | grep -e AUTH_URL -e AUTH_HYDRA_ID -e AUTH_HYDRA_SECRET -e AUTH_SECRET -e AUTH_HYDRA_ISSUER -e HYDRA_ADMIN_URL -e NEXT_PUBLIC_KRATOS_URL >> .env.production
+            - env | grep -e AUTH_URL -e AUTH_HYDRA_ID -e AUTH_HYDRA_SECRET -e AUTH_SECRET -e AUTH_HYDRA_ISSUER -e HYDRA_ADMIN_URL -e HYDRA_ADMIN_SECRET -e NEXT_PUBLIC_KRATOS_URL >> .env.production
         build:
           commands:
             - npm run build
@@ -73,7 +78,8 @@ resource "aws_amplify_app" "patient_app" {
     AUTH_HYDRA_SECRET    = data.aws_ssm_parameter.auth_hydra_secret.value
     AUTH_SECRET          = data.aws_ssm_parameter.auth_secret.value
     AUTH_HYDRA_ISSUER    = "https://hydra.clearpath.fitleads.com.br"
-    HYDRA_ADMIN_URL      = "http://34.226.186.255:4445"
+    HYDRA_ADMIN_URL      = "https://hydra.clearpath.fitleads.com.br"
+    HYDRA_ADMIN_SECRET   = data.aws_ssm_parameter.hydra_admin_secret.value
     NEXT_PUBLIC_KRATOS_URL = "https://kratos.clearpath.fitleads.com.br"
   }
 }

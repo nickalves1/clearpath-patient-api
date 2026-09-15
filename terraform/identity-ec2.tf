@@ -18,17 +18,6 @@ resource "aws_security_group" "identity_ec2" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  # Temporary - Hydra Admin API, open only to Nicolas's IP for local dev of
-  # the login/consent flow (card #4). Close this once that work is done -
-  # this API has no auth of its own. See MEMORY/project notes.
-  ingress {
-    description = "temporary, only for local dev of the login/consent"
-    from_port   = 4445
-    to_port     = 4445
-    protocol    = "tcp"
-    cidr_blocks = ["191.19.22.43/32"]
-  }
-
   egress {
     description = "Allow all outbound traffic"
     from_port   = 0
