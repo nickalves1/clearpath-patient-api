@@ -1,8 +1,8 @@
 urls:
   self:
     issuer: https://hydra.clearpath.fitleads.com.br/
-  login: http://localhost:3000/login
-  consent: http://localhost:3000/consent
+  login: https://app.clearpath.fitleads.com.br/login
+  consent: https://app.clearpath.fitleads.com.br/consent
 
 serve:
   cookies:
