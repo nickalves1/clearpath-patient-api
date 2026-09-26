@@ -54,7 +54,7 @@ resource "aws_amplify_app" "patient_app" {
         preBuild:
           commands:
             - npm ci
-            - env | grep -e AUTH_URL -e AUTH_HYDRA_ID -e AUTH_HYDRA_SECRET -e AUTH_SECRET -e AUTH_HYDRA_ISSUER -e HYDRA_ADMIN_URL -e HYDRA_ADMIN_SECRET -e NEXT_PUBLIC_KRATOS_URL >> .env.production
+            - env | grep -e AUTH_URL -e AUTH_HYDRA_ID -e AUTH_HYDRA_SECRET -e AUTH_SECRET -e AUTH_HYDRA_ISSUER -e HYDRA_ADMIN_URL -e HYDRA_ADMIN_SECRET -e NEXT_PUBLIC_KRATOS_URL -e NEXT_PUBLIC_HYDRA_ISSUER >> .env.production
         build:
           commands:
             - npm run build
@@ -81,6 +81,7 @@ resource "aws_amplify_app" "patient_app" {
     HYDRA_ADMIN_URL      = "https://hydra.clearpath.fitleads.com.br"
     HYDRA_ADMIN_SECRET   = data.aws_ssm_parameter.hydra_admin_secret.value
     NEXT_PUBLIC_KRATOS_URL = "https://kratos.clearpath.fitleads.com.br"
+    NEXT_PUBLIC_HYDRA_ISSUER = "https://hydra.clearpath.fitleads.com.br"
   }
 }
 

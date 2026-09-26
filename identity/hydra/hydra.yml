@@ -3,6 +3,7 @@ urls:
     issuer: https://hydra.clearpath.fitleads.com.br/
   login: https://app.clearpath.fitleads.com.br/login
   consent: https://app.clearpath.fitleads.com.br/consent
+  logout: https://app.clearpath.fitleads.com.br/logout
 
 serve:
   cookies:
