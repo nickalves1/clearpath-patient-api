@@ -24,8 +24,9 @@ serve:
     base_url: http://127.0.0.1:4434/
 
 selfservice:
-  default_browser_return_url: http://localhost:3000/
+  default_browser_return_url: https://app.clearpath.fitleads.com.br/
   allowed_return_urls:
+    - https://app.clearpath.fitleads.com.br
     - http://localhost:3000
 
   methods:
@@ -37,7 +38,7 @@ selfservice:
       enabled: true
     logout:
       after:
-        default_browser_return_url: http://localhost:3000/
+        default_browser_return_url: https://app.clearpath.fitleads.com.br/login
 
 identity:
   default_schema_id: default
